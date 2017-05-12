@@ -1,11 +1,42 @@
 #!/bin/bash
 
-desktopHidden=$(defaults read com.apple.finder CreateDesktop)
+key="$1"
 
-if ($desktopHidden) then
+hideDesktop () {
     defaults write com.apple.finder CreateDesktop false
-else
-    defaults write com.apple.finder CreateDesktop true
-fi
+    killall Finder
+}
 
-killall Finder
+showDesktop () {
+    defaults write com.apple.finder CreateDesktop true
+    killall Finder
+}
+
+hideAllIcons () {
+    chflags hidden ~/Desktop/*
+}
+
+showAllIcons () {
+    chflags nohidden ~/Desktop/*
+}
+
+case $key in
+    -disable)
+    hideDesktop
+    ;;
+    -enable)
+    showDesktop
+    ;;
+    -hide)
+    hideAllIcons
+    ;;
+    -show)
+    showAllIcons
+    ;;
+    -ph)
+    chflags hidden ~/Desktop/$2
+    ;;
+    -ps)
+    chflags nohidden ~/Desktop/$2
+    ;;
+esac
